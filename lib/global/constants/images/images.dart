@@ -1,0 +1,1 @@
+String attendance = 'assets/images/attendance.png';
