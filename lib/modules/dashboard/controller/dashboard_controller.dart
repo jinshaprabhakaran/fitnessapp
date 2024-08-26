@@ -49,7 +49,7 @@ final PageController pageController = PageController(initialPage: 0);
  
  // adding users from hive to an list
 
-  addUserData() {
+ addUserData() {
   checkInList.clear();
   checkOutList.clear();
   userModel.clear();
@@ -60,45 +60,55 @@ final PageController pageController = PageController(initialPage: 0);
     var user = userBox.getAt(i) as UserModel?;
     if (user != null) {
       userModel.add(user);
-      userBox.get('dailyStatus');
-      notifyListeners();
-   
+
+      // Check if the user has a status for the current date
       var status = user.dailyStatus?[currentDate];
-    
-    //  to track users checkin and checkout
-      if (status?.isCheckedOut == false) {
-       
-        checkOutList.add(user);
-      } else if (status == null || !status.isCheckedOut) {
+
+      if (status == null) {
+        // If there's no status for today, add the user to the checkInList
         checkInList.add(user);
+      } else if (status.isCheckedIn && !status.isCheckedOut) {
+        // If the user has checked in but not checked out, add to checkOutList
+        checkOutList.add(user);
       }
     }
   }
   notifyListeners();
 }
 
+
  // when the user checkin, it moves to checkout list
  checkInUser(int index) {
     var user = checkInList[index];
     var currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    user.dailyStatus = {};
-    user.dailyStatus?[currentDate] = CheckInCheckOutStatus();
-    user.dailyStatus?[currentDate]?.isCheckedIn = true;
-   
-  user.save();
-   checkInList.removeAt(index);
+
+    // Initialize the map if null
+    user.dailyStatus ??= {};
+
+    // Update the current date's status
+    user.dailyStatus?[currentDate] = CheckInCheckOutStatus(isCheckedIn: true);
+
+    user.save();
+
+    // Move user from checkInList to checkOutList
+    checkInList.removeAt(index);
     if (!checkOutList.contains(user)) {
       checkOutList.add(user);
     }
+
     notifyListeners();
-  }
+}
+
 
 // when user checkedout, it removed from that list
 checkOutUser(int index) {
     var user = checkOutList[index];
     var currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-      user.dailyStatus ??= {};
+    // Initialize the map if null
+    user.dailyStatus ??= {};
+
+    // Ensure the date entry exists and update it
     user.dailyStatus?[currentDate] ??= CheckInCheckOutStatus();
     user.dailyStatus?[currentDate]?.isCheckedOut = true;
 
@@ -106,7 +116,7 @@ checkOutUser(int index) {
     
     checkOutList.remove(user);
     notifyListeners();
-  }
+}
 
  // init function
  onInit(){ 
@@ -193,7 +203,7 @@ checkOutUser(int index) {
       case 6:
       return UploadPhotoWidget(title: 'Upload Photo', length: '7 / 7', value: 7 / 7, onPressed: ()async{
      await  userBox.add(UserModel(name: nameCtrl.text, 
-         age: heightCtrl.text,weight:weightCtrl.text ,
+         age: ageCtrl.text,weight:weightCtrl.text ,
           height: heightCtrl.text,bloodgroup:bloodCtrl.text ,
          phonenumber: phoneCtrl.text,
           dp: galleryFile!.path), );

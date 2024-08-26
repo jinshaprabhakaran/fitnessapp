@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appdebug_font_package/appdebug_font_package.dart';
+import 'package:fitnessappadmin/modules/dashboard/view/user_details_screen.view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -26,23 +27,28 @@ class UsersListScreen extends StatelessWidget {
         ListView.builder(shrinkWrap: true,
           itemCount: dashboardCtrl.userModel.length,
           itemBuilder: (context,index){
-       return Padding(
-         padding:  EdgeInsets.only(bottom: 10.h),
-         child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
-            Container(width: 50.w,height: 50.h,
-              decoration: BoxDecoration( shape: BoxShape.circle,
-                image:DecorationImage(fit: BoxFit.cover,
-                  image: FileImage(File(dashboardCtrl.userModel[index].dp),)),),),
-                  Gap(20.w),
-             Column(
-               children: [
-                 KStyles().semiBold17(text: dashboardCtrl.userModel[index].name,),
-                 KStyles().med17(text: dashboardCtrl.userModel[index].phonenumber,),
-               ],
-             ),
-             
-           ],
+       return GestureDetector(
+        onTap: (){
+         Navigator.of(context).push((MaterialPageRoute(builder: (context){return UserDetailsScreen(index:index);})));
+        },
+         child: Padding(
+           padding:  EdgeInsets.only(bottom: 10.h),
+           child: Row(crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+              Container(width: 50.w,height: 50.h,
+                decoration: BoxDecoration( shape: BoxShape.circle,
+                  image:DecorationImage(fit: BoxFit.cover,
+                    image: FileImage(File(dashboardCtrl.userModel[index].dp),)),),),
+                    Gap(20.w),
+               Column(
+                 children: [
+                   KStyles().semiBold17(text: dashboardCtrl.userModel[index].name,),
+                   KStyles().reg17(text: dashboardCtrl.userModel[index].phonenumber,),
+                 ],
+               ),
+               
+             ],
+           ),
          ),
        );
         })
