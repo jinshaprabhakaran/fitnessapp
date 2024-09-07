@@ -33,6 +33,8 @@ selectedIndex = index;
 notifyListeners();
 }
 
+
+
 // page controller for pageview
 
 final PageController pageController = PageController(initialPage: 0);
@@ -59,7 +61,7 @@ final PageController pageController = PageController(initialPage: 0);
   for (int i = 0; i < userBox.length; i++) {
     var user = userBox.getAt(i) as UserModel?;
     if (user != null) {
-      userModel.add(user);
+      userModel.add(user,);
 
       // Check if the user has a status for the current date
       var status = user.dailyStatus?[currentDate];
@@ -206,7 +208,10 @@ checkOutUser(int index) {
          age: ageCtrl.text,weight:weightCtrl.text ,
           height: heightCtrl.text,bloodgroup:bloodCtrl.text ,
          phonenumber: phoneCtrl.text,
-          dp: galleryFile!.path), );
+          dp: galleryFile!.path,
+          paymentHistory: [ PaymentHistory(month: 'January', type: 'online', status: 'paid', date: '2024-01-05'),
+  PaymentHistory(month: 'February', type: 'cash', status: 'paid', date: '2024-02-07'),]),
+           );
          addUserData();
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
            });

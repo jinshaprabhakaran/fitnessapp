@@ -18,6 +18,7 @@ void main() async {
   Hive.init(document.path);
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(CheckInCheckOutStatusAdapter());
+  Hive.registerAdapter(PaymentHistoryAdapter());
 
   userBox = await Hive.openBox<UserModel>(Config.dbName);
 
