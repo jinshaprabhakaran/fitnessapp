@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'global/config/config.dart';
 import 'global/constants/providers/providers_list.dart';
 import 'global/constants/routes/routes.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData.light().copyWith(
                   searchBarTheme: SearchBarThemeData(
                       backgroundColor:
-                          MaterialStateProperty.all(KColors().kWhite)),
+                          WidgetStateProperty.all(KColors().kWhite)),
                 )));
   }
 }
