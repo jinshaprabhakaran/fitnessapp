@@ -69,16 +69,16 @@ class DashBoardController extends ChangeNotifier {
       var user = userBox.getAt(i) as UserModel?;
       if (user != null) {
         userModel.add(user);
+        userBox.get('dailyStatus');
+        notifyListeners();
 
-        // Check if the user has a status for the current date
         var status = user.dailyStatus?[currentDate];
 
-        if (status == null) {
-          // If there's no status for today, add the user to the checkInList
-          checkInList.add(user);
-        } else if (status.isCheckedIn && !status.isCheckedOut) {
-          // If the user has checked in but not checked out, add to checkOutList
+        //  to track users checkin and checkout
+        if (status?.isCheckedOut == false) {
           checkOutList.add(user);
+        } else if (status == null || !status.isCheckedOut) {
+          checkInList.add(user);
         }
       }
     }
@@ -89,16 +89,11 @@ class DashBoardController extends ChangeNotifier {
   checkInUser(int index) {
     var user = checkInList[index];
     var currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-    // Initialize the map if null
-    user.dailyStatus ??= {};
-
-    // Update the current date's status
-    user.dailyStatus?[currentDate] = CheckInCheckOutStatus(isCheckedIn: true);
+    user.dailyStatus = {};
+    user.dailyStatus?[currentDate] = CheckInCheckOutStatus();
+    user.dailyStatus?[currentDate]?.isCheckedIn = true;
 
     user.save();
-
-    // Move user from checkInList to checkOutList
     checkInList.removeAt(index);
     if (!checkOutList.contains(user)) {
       checkOutList.add(user);
@@ -190,54 +185,50 @@ class DashBoardController extends ChangeNotifier {
     switch (index) {
       case 0:
         return RegistrationDetails(
-            title: 'Name',
-            hintText: 'Name',
-            textEditingController: nameCtrl,
-            value: 1 / 7,
-            length: '1 / 7',
-            focusNode: nameFocusNode);
+          title: 'Name',
+          hintText: 'Name',
+          textEditingController: nameCtrl,
+          value: 1 / 7,
+          length: '1 / 7',
+        );
       case 1:
         return RegistrationDetails(
           title: 'PhoneNumber',
           value: 2 / 7,
           length: '2 / 7',
+          keyboardType: TextInputType.phone,
           hintText: 'Phone',
           textEditingController: phoneCtrl,
-          focusNode: phoneFocusNode,
-          textInputType: TextInputType.phone,
         );
       case 2:
         return RegistrationDetails(
-            title: 'Age',
-            hintText: 'Age',
-            textEditingController: ageCtrl,
-            focusNode: ageFocusNode,
-            value: 3 / 7,
-            textInputType: TextInputType.number,
-            length: '3 / 7');
+          title: 'Age',
+          hintText: 'Age',
+          textEditingController: ageCtrl,
+          value: 3 / 7,
+          length: '3 / 7',
+          keyboardType: TextInputType.number,
+        );
       case 3:
         return RegistrationDetails(
             title: 'Weight',
             hintText: 'Kg',
-            focusNode: weightFocusNode,
             textEditingController: weightCtrl,
-            textInputType: TextInputType.number,
+            keyboardType: TextInputType.number,
             value: 4 / 7,
             length: '4 / 7');
       case 4:
         return RegistrationDetails(
             title: 'Height',
             hintText: 'Cm',
-            focusNode: heightFocusNode,
             textEditingController: heightCtrl,
-            textInputType: TextInputType.number,
+            keyboardType: TextInputType.number,
             value: 5 / 7,
             length: '5 / 7');
       case 5:
         return RegistrationDetails(
             title: 'Blood Group',
             hintText: 'blood group',
-            focusNode: bloodFocusNode,
             textEditingController: bloodCtrl,
             value: 6 / 7,
             length: '6 / 7');
@@ -250,7 +241,7 @@ class DashBoardController extends ChangeNotifier {
               await userBox.add(
                 UserModel(
                     name: nameCtrl.text,
-                    age: ageCtrl.text,
+                    age: heightCtrl.text,
                     weight: weightCtrl.text,
                     height: heightCtrl.text,
                     bloodgroup: bloodCtrl.text,
@@ -258,7 +249,6 @@ class DashBoardController extends ChangeNotifier {
                     dp: galleryFile!.path),
               );
               addUserData();
-              // ignore: use_build_context_synchronously
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             });
 
