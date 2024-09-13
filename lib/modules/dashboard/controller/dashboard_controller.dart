@@ -196,7 +196,7 @@ class DashBoardController extends ChangeNotifier {
           title: 'PhoneNumber',
           value: 2 / 7,
           length: '2 / 7',
-          keyboardType: TextInputType.phone,
+          textInputType: TextInputType.phone,
           hintText: 'Phone',
           textEditingController: phoneCtrl,
         );
@@ -207,14 +207,14 @@ class DashBoardController extends ChangeNotifier {
           textEditingController: ageCtrl,
           value: 3 / 7,
           length: '3 / 7',
-          keyboardType: TextInputType.number,
+          textInputType: TextInputType.number,
         );
       case 3:
         return RegistrationDetails(
             title: 'Weight',
             hintText: 'Kg',
             textEditingController: weightCtrl,
-            keyboardType: TextInputType.number,
+            textInputType: TextInputType.number,
             value: 4 / 7,
             length: '4 / 7');
       case 4:
@@ -222,7 +222,7 @@ class DashBoardController extends ChangeNotifier {
             title: 'Height',
             hintText: 'Cm',
             textEditingController: heightCtrl,
-            keyboardType: TextInputType.number,
+            textInputType: TextInputType.number,
             value: 5 / 7,
             length: '5 / 7');
       case 5:
