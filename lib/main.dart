@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData.light().copyWith(
                   searchBarTheme: SearchBarThemeData(
                       backgroundColor:
-                          WidgetStateProperty.all(KColors().kWhite)),
+                          MaterialStateProperty.all(KColors().kWhite)),
                 )));
   }
 }
