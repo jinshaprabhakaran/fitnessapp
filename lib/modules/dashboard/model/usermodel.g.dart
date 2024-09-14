@@ -26,13 +26,15 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       dp: fields[6] as dynamic,
       dailyStatus: (fields[7] as Map?)?.cast<String, CheckInCheckOutStatus>(),
       paymentHistory: (fields[8] as List?)?.cast<PaymentHistory>(),
+      hasPaidAdvance: fields[9] as bool,
+      selectedWeightOption: fields[10] as WeightOption?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -50,7 +52,11 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(7)
       ..write(obj.dailyStatus)
       ..writeByte(8)
-      ..write(obj.paymentHistory);
+      ..write(obj.paymentHistory)
+      ..writeByte(9)
+      ..write(obj.hasPaidAdvance)
+      ..writeByte(10)
+      ..write(obj.selectedWeightOption);
   }
 
   @override
@@ -140,6 +146,46 @@ class PaymentHistoryAdapter extends TypeAdapter<PaymentHistory> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PaymentHistoryAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class WeightOptionAdapter extends TypeAdapter<WeightOption> {
+  @override
+  final int typeId = 3;
+
+  @override
+  WeightOption read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return WeightOption(
+      optionName: fields[0] as String,
+      feeAmount: fields[1] as double,
+      advanceAmount: fields[2] as double,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, WeightOption obj) {
+    writer
+      ..writeByte(3)
+      ..writeByte(0)
+      ..write(obj.optionName)
+      ..writeByte(1)
+      ..write(obj.feeAmount)
+      ..writeByte(2)
+      ..write(obj.advanceAmount);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WeightOptionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

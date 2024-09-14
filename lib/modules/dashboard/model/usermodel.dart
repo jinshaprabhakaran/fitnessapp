@@ -14,7 +14,7 @@ class UserModel extends HiveObject {
   dynamic age;
 
   @HiveField(3)
-  dynamic weight;
+  dynamic weight; 
 
   @HiveField(4)
   dynamic height;
@@ -29,7 +29,13 @@ class UserModel extends HiveObject {
   Map<String, CheckInCheckOutStatus>? dailyStatus;
 
   @HiveField(8)
-  List<PaymentHistory>? paymentHistory; // New field to store payment history
+  List<PaymentHistory>? paymentHistory;
+
+  @HiveField(9)
+  bool hasPaidAdvance; // New field to store advance payment status
+
+  @HiveField(10)
+  WeightOption? selectedWeightOption; // New field for selected weight option
 
   UserModel({
     required this.name,
@@ -40,7 +46,9 @@ class UserModel extends HiveObject {
     this.bloodgroup,
     this.dp,
     this.dailyStatus,
-    this.paymentHistory, // Added to constructor
+    this.paymentHistory,
+    this.hasPaidAdvance = false, // Default is false (advance not paid)
+    this.selectedWeightOption, // Option selected from the list (e.g., cardio)
   });
 }
 
@@ -58,7 +66,7 @@ class CheckInCheckOutStatus extends HiveObject {
   });
 }
 
-@HiveType(typeId: 2) // New type for payment history
+@HiveType(typeId: 2)
 class PaymentHistory extends HiveObject {
   @HiveField(0)
   String month;
@@ -77,5 +85,23 @@ class PaymentHistory extends HiveObject {
     required this.type,
     required this.status,
     required this.date,
+  });
+}
+
+@HiveType(typeId: 3)
+class WeightOption extends HiveObject { 
+  @HiveField(0)
+  String optionName; 
+
+  @HiveField(1)
+  double feeAmount; 
+
+  @HiveField(2)
+  double advanceAmount; 
+
+  WeightOption({
+    required this.optionName,
+    required this.feeAmount,
+    required this.advanceAmount,
   });
 }

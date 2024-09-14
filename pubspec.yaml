@@ -48,7 +48,8 @@ dependencies:
   image_picker: ^1.1.2
   intl: ^0.19.0
   connectivity_plus: ^6.0.5
-  battery_plus: ^6.0.3
+  battery_plus: any
+  fluttertoast: any
 
 dev_dependencies:
   flutter_test:

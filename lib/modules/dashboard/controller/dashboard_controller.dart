@@ -5,6 +5,7 @@ import 'package:fitnessappadmin/modules/dashboard/model/usermodel.dart';
 import 'package:fitnessappadmin/modules/dashboard/view/attendance_screen.view.dart';
 import 'package:fitnessappadmin/modules/dashboard/view/registration_screen.view.dart';
 import 'package:fitnessappadmin/modules/dashboard/view/users_list_screen.view.dart';
+import 'package:fitnessappadmin/modules/dashboard/widget/advance_amount.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import 'package:intl/intl.dart';
 
 import '../widget/registration_data.widget.dart';
 import '../widget/upload_photo.widget.dart';
+import '../widget/weight_training_options.widget.dart';
 
 class DashBoardController extends ChangeNotifier {
   // controllers
@@ -180,77 +182,147 @@ notifyListeners();
     );
   }
 
-// registration flow
-  changePage(int index, BuildContext context) {
-    switch (index) {
-      case 0:
-        return RegistrationDetails(
-          title: 'Name',
-          hintText: 'Name',
-          textEditingController: nameCtrl,
-          value: 1 / 7,
-          length: '1 / 7',
-        );
-      case 1:
-        return RegistrationDetails(
-          title: 'PhoneNumber',
-          value: 2 / 7,
-          length: '2 / 7',
-          textInputType: TextInputType.phone,
-          hintText: 'Phone',
-          textEditingController: phoneCtrl,
-        );
-      case 2:
-        return RegistrationDetails(
-          title: 'Age',
-          hintText: 'Age',
-          textEditingController: ageCtrl,
-          value: 3 / 7,
-          length: '3 / 7',
-          textInputType: TextInputType.number,
-        );
-      case 3:
-        return RegistrationDetails(
-            title: 'Weight',
-            hintText: 'Kg',
-            textEditingController: weightCtrl,
-            textInputType: TextInputType.number,
-            value: 4 / 7,
-            length: '4 / 7');
-      case 4:
-        return RegistrationDetails(
-            title: 'Height',
-            hintText: 'Cm',
-            textEditingController: heightCtrl,
-            textInputType: TextInputType.number,
-            value: 5 / 7,
-            length: '5 / 7');
-      case 5:
-        return RegistrationDetails(
-            title: 'Blood Group',
-            hintText: 'blood group',
-            textEditingController: bloodCtrl,
-            value: 6 / 7,
-            length: '6 / 7');
-      case 6:
-      return UploadPhotoWidget(title: 'Upload Photo', length: '7 / 7', value: 7 / 7, onPressed: ()async{
-     await  userBox.add(UserModel(name: nameCtrl.text, 
-         age: ageCtrl.text,weight:weightCtrl.text ,
-          height: heightCtrl.text,bloodgroup:bloodCtrl.text ,
-         phonenumber: phoneCtrl.text,
-          dp: galleryFile!.path,
-          paymentHistory: [ PaymentHistory(month: 'January', type: 'online', status: 'paid', date: '2024-01-05'),
-  PaymentHistory(month: 'February', type: 'cash', status: 'paid', date: '2024-02-07'),]),
-           );
-         addUserData();
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-           });
+  // get unpaid months
+List<String> getUnpaidMonths(UserModel user) {
+  Set<String> paidMonths = user.paymentHistory
+      ?.where((entry) => entry.status == 'paid')
+      .map((entry) => entry.month)
+      .toSet() ?? {};
 
-      default:
+  List<String> unpaidMonths = [];
+  DateTime now = DateTime.now();
+
+  for (int i = 1; i <= 12; i++) {
+    String month = DateFormat('MMMM').format(DateTime(now.year, i, 1));
+    if (!paidMonths.contains(month)) {
+      unpaidMonths.add(month);
     }
   }
 
-  changeFocusNode(FocusNode? focusNode, BuildContext context) {
+  return unpaidMonths;
+}
+// update payments
+ updatePaymentStatus(int index, List<String> selectedMonths) {
+  UserModel user = userModel[index];
+
+ 
+  List<PaymentHistory> newPaymentHistory = List.from(user.paymentHistory ?? []);
+  for (String month in selectedMonths) {
+  
+      newPaymentHistory.add(
+        PaymentHistory(month: month, type: 'online', status: 'paid', date: DateFormat('yyyy-MM-dd').format(DateTime.now())),
+      );
+    
+  }
+
+  
+  user.paymentHistory = newPaymentHistory;
+  userBox.put(index,user);
+  notifyListeners(); 
+}
+
+
+
+  
+
+ WeightOption? selectedWeightOption; 
+bool hasPaidAdvance = false; 
+
+changePage(int index, BuildContext context) {
+  switch (index) {
+    case 0:
+      return RegistrationDetails(
+        title: 'Name',
+        hintText: 'Name',
+        textEditingController: nameCtrl,
+        value: 1 / 9,
+        length: '1 / 9',
+      );
+    case 1:
+      return RegistrationDetails(
+        title: 'PhoneNumber',
+        value: 2 / 9,
+        length: '2 / 9',
+        textInputType: TextInputType.phone,
+        hintText: 'Phone',
+        textEditingController: phoneCtrl,
+      );
+    case 2:
+      return RegistrationDetails(
+        title: 'Age',
+        hintText: 'Age',
+        textEditingController: ageCtrl,
+        value: 3 / 9,
+        length: '3 / 9',
+        textInputType: TextInputType.number,
+      );
+    case 3:
+      return RegistrationDetails(
+          title: 'Weight',
+          hintText: 'Kg',
+          textEditingController: weightCtrl,
+          textInputType: TextInputType.number,
+          value: 4 / 9,
+          length: '4 / 9');
+    case 4:
+      return RegistrationDetails(
+          title: 'Height',
+          hintText: 'Cm',
+          textEditingController: heightCtrl,
+          textInputType: TextInputType.number,
+          value: 5 / 9,
+          length: '5 / 9');
+    case 5:
+      return RegistrationDetails(
+          title: 'Blood Group',
+          hintText: 'Blood Group',
+          textEditingController: bloodCtrl,
+          value: 6 / 9,
+          length: '6 / 9');
+    case 6:
+      return const UploadPhotoWidget(
+        title: 'Upload Photo',
+        length: '7 / 9',
+        value: 7 / 9,
+      );
+    case 7:
+      return const WeightSelectionScreen(
+        value: 8 / 9,
+        length: '8 / 9',
+       
+      );
+    case 8:
+      return AdvanceAmountSelectionScreen(
+        value: 9 / 9,
+        length: '9 / 9',
+       
+        onSubmit: () async {
+          
+             await userBox.add(UserModel(
+        name: nameCtrl.text,
+        phonenumber: phoneCtrl.text,
+        age: ageCtrl.text,
+        weight: weightCtrl.text,
+        height: heightCtrl.text,
+        bloodgroup: bloodCtrl.text,
+        dp: galleryFile!.path,
+        selectedWeightOption: selectedWeightOption, 
+        hasPaidAdvance: hasPaidAdvance, 
+      ));
+
+            addUserData(); 
+            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+          
+        },
+      );
+    default:
+      return Container(); // Fallback widget if case doesn't match
+  }
+}
+
+  
+
+  changeFocusNode(FocusNode ? focusNode, BuildContext context) {
     FocusScope.of(context).requestFocus(focusNode);
 
     pageController.nextPage(

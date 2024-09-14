@@ -26,7 +26,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     body: PageView.builder(
     
       controller:dashboardCtrl.pageController ,
-      itemCount: 7,
+      itemCount: 9,
       itemBuilder: (context, index) {
         return dashboardCtrl.changePage(index,context);
       },

@@ -11,7 +11,6 @@ class CalendarWeekDays extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-         
            weekDays('Mon'),
            weekDays('Tue'),
           weekDays('Wed'),

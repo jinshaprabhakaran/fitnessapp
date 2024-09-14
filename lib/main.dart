@@ -20,7 +20,7 @@ void main() async {
   Hive.registerAdapter(UserModelAdapter());
   Hive.registerAdapter(CheckInCheckOutStatusAdapter());
   Hive.registerAdapter(PaymentHistoryAdapter());
-
+  Hive.registerAdapter(WeightOptionAdapter());
   userBox = await Hive.openBox<UserModel>(Config.dbName);
 
   runApp(MultiProvider(providers: providersList, child: const MyApp()));

@@ -37,7 +37,7 @@ class RegistrationDetails extends StatelessWidget {
             Gap(20.h),
             SmoothPageIndicator(
               controller: dashboardCtrl.pageController,
-              count: 7,
+              count: 9,
               effect: WormEffect(
                 type: WormType.thin,
                 dotHeight: 6,
